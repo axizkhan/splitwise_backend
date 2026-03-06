@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { JwtUser } from "./jwtUser";
+import { JwtUser } from "../jwtUser";
 
 declare global {
   namespace Express {
@@ -16,3 +16,5 @@ declare global {
     }
   }
 }
+
+export {};
