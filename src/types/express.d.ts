@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { JwtUser } from "./jwtUser.js";
+import { JwtUser } from "./jwtUser";
 
 declare global {
   namespace Express {
