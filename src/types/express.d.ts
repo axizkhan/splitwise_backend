@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { JwtUser } from "./jwtUser.js";
 
 declare global {
   namespace Express {
@@ -8,11 +9,7 @@ declare global {
         data?: any;
         message: string;
       };
-      user?: {
-        id: string;
-        iat: number;
-        exp: number;
-      };
+      user?: JwtUser;
     }
   }
 }
