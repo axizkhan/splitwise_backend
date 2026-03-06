@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 export class Server {
   private SERVER: http.Server;
-  private PORT: number | string;
+  private PORT: number;
   private MONGODBURL: string;
   private mongooseOption = {
     maxPoolSize: 10,
@@ -15,7 +15,7 @@ export class Server {
 
   constructor(port: number | string) {
     const appInstance = new App();
-    this.PORT = port;
+    this.PORT = Number(port);
     this.SERVER = http.createServer(appInstance.app);
     this.MONGODBURL = process.env.MONGODB_URL || "";
   }
@@ -23,11 +23,14 @@ export class Server {
   async start() {
     try {
       await mongoose.connect(this.MONGODBURL, this.mongooseOption);
-      this.SERVER.listen(this.PORT);
+      this.SERVER.listen(this.PORT, "0.0.0.0", () => {
+        console.log(`Server runing on port ${this.PORT}`);
+      });
 
-      console.log("Server and db connected successfully");
+      console.log("db connected successfully");
     } catch (err) {
-      throw err;
+      console.log("server failed to start", err);
+      process.exit(1);
     }
   }
 }
