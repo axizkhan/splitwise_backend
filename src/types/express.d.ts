@@ -9,7 +9,10 @@ declare global {
         data?: any;
         message: string;
       };
-      user?: JwtUser;
+      user?: {
+        id: string;
+        email: string;
+      };
     }
   }
 }
