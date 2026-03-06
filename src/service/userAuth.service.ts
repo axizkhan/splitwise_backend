@@ -1,6 +1,6 @@
-import { Conflict } from "../error/httpClientError";
-import { UserModel } from "../models/userModel";
-import { User } from "../types/user";
+import { Conflict } from "../error/httpClientError.js";
+import { UserModel } from "../models/userModel.js";
+import { User } from "../types/user.js";
 import { IUser } from "../types/userModel.js";
 
 export class UserAuthServices {

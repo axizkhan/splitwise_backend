@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { BalanceModel } from "../models/balanceModel";
-import { IJournel } from "../types/journel";
-import { IBalance } from "../types/balance";
+import { BalanceModel } from "../models/balanceModel.js";
+import { IJournel } from "../types/journel.js";
+import { IBalance } from "../types/balance.js";
 
 export class BalanceService {
   constructor() {}

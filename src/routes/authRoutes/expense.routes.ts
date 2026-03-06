@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { GroupController } from "../../controller/group.controller";
-import { ExpenseController } from "../../controller/expense.controller";
+import { GroupController } from "../../controller/group.controller.js";
+import { ExpenseController } from "../../controller/expense.controller.js";
 
 export class ExpenseRouter {
   public expenseRouter: Router;

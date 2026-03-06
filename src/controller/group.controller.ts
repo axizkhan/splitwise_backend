@@ -1,12 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
-import { GroupService } from "../service/group.service";
-import { InternalServerError } from "../error/httpServerError";
-import { BadRequest, NotFound, Unauthorized } from "../error/httpClientError";
-import { UserAuthServices } from "../service/userAuth.service";
+import { GroupService } from "../service/group.service.js";
+import { InternalServerError } from "../error/httpServerError.js";
+import {
+  BadRequest,
+  NotFound,
+  Unauthorized,
+} from "../error/httpClientError.js";
+import { UserAuthServices } from "../service/userAuth.service.js";
 import { group } from "node:console";
-import { Group } from "../models/groupModel";
-import { BalanceService } from "../service/balance.service";
+import { Group } from "../models/groupModel.js";
+import { BalanceService } from "../service/balance.service.js";
 import {
   BalanceResponse,
   GroupSummaryResponse,

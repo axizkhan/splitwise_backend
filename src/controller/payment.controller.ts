@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { GroupService } from "../service/group.service";
+import { GroupService } from "../service/group.service.js";
 
-import { Unauthorized, UnprocessableEntity } from "../error/httpClientError";
-import { JournelServices } from "../service/journel.service";
-import { PaymentService } from "../service/payment.service";
-import { EntryService } from "../service/enetry.service";
-import { BalanceService } from "../service/balance.service";
+import { Unauthorized, UnprocessableEntity } from "../error/httpClientError.js";
+import { JournelServices } from "../service/journel.service.js";
+import { PaymentService } from "../service/payment.service.js";
+import { EntryService } from "../service/enetry.service.js";
+import { BalanceService } from "../service/balance.service.js";
 
 export class PaymentController {
   private paymentService: PaymentService;

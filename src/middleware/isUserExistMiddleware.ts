@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Unauthorized } from "../error/httpClientError";
+import { Unauthorized } from "../error/httpClientError.js";
 
 export class IsUserExist {
   isUserExist(req: Request, res: Response, next: NextFunction) {

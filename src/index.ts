@@ -1,3 +1,3 @@
-import { BootStrap } from "./main";
+import { BootStrap } from "./main.js";
 
 await new BootStrap().start();

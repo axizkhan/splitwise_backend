@@ -1,6 +1,6 @@
 import type { Response, Request, NextFunction } from "express";
-import { HttpClientError } from "../error/httpClientError";
-import { HttpServerError } from "../error/httpServerError";
+import { HttpClientError } from "../error/httpClientError.js";
+import { HttpServerError } from "../error/httpServerError.js";
 import path from "path";
 import { writeFile, writeFileSync } from "fs";
 

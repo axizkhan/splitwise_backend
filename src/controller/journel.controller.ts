@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { GroupService } from "../service/group.service";
+import { GroupService } from "../service/group.service.js";
 
-import { Unauthorized } from "../error/httpClientError";
-import { JournelServices } from "../service/journel.service";
+import { Unauthorized } from "../error/httpClientError.js";
+import { JournelServices } from "../service/journel.service.js";
 
 export class JournelController {
   private journelService: JournelServices;

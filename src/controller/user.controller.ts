@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { GroupService } from "../service/group.service";
+import { GroupService } from "../service/group.service.js";
 
-import { Unauthorized } from "../error/httpClientError";
+import { Unauthorized } from "../error/httpClientError.js";
 
 export class UserController {
   private groupService: GroupService;

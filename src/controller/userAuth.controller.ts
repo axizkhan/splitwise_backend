@@ -1,12 +1,11 @@
-/// <reference path="../types/express.d.ts" />
 import { Request, Response, NextFunction } from "express";
-import { HashingUtil } from "../utils/hashing.util";
+import { HashingUtil } from "../utils/hashing.util.js";
 import passport from "passport";
 
-import { UserAuthServices } from "../service/userAuth.service";
-import { Conflict, NotFound, Unauthorized } from "../error/httpClientError";
+import { UserAuthServices } from "../service/userAuth.service.js";
+import { Conflict, NotFound, Unauthorized } from "../error/httpClientError.js";
 import { ObjectId } from "mongoose";
-import { JWTService } from "../service/jwtToken.service";
+import { JWTService } from "../service/jwtToken.service.js";
 export class UserAuthController {
   private userAuthService: UserAuthServices;
   private hashingUtliFunctions: HashingUtil;

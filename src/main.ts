@@ -1,4 +1,4 @@
-import { Server } from "./server/server";
+import { Server } from "./server/server.js";
 import dotenv from "dotenv";
 
 export class BootStrap {

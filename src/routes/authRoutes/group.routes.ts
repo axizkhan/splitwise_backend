@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { GroupController } from "../../controller/group.controller";
+import { GroupController } from "../../controller/group.controller.js";
 
 export class GroupRouter {
   public groupRouter: Router;

@@ -1,11 +1,11 @@
 import express, { Application } from "express";
 import cors from "cors";
-import { RouteHandler } from "./routes";
-import { ResponseSenderMiddleware } from "./middleware/reponseSenderMiddleware";
-import { ErrorHandler } from "./middleware/errorHandlingMiddleware";
+import { RouteHandler } from "./routes/index.js";
+import { ResponseSenderMiddleware } from "./middleware/reponseSenderMiddleware.js";
+import { ErrorHandler } from "./middleware/errorHandlingMiddleware.js";
 import passport from "passport";
-import { PassportStrategy } from "./middleware/passport/passportLocalLoginMiddleware";
-import { PassportJWTMIddleware } from "./middleware/passport/passportJwtAuth";
+import { PassportStrategy } from "./middleware/passport/passportLocalLoginMiddleware.js";
+import { PassportJWTMIddleware } from "./middleware/passport/passportJwtAuth.js";
 import cookieParser from "cookie-parser";
 export class App {
   public app: Application;

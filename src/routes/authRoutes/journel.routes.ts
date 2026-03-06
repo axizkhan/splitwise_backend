@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { JournelController } from "../../controller/journel.controller";
+import { JournelController } from "../../controller/journel.controller.js";
 
 export class JournelRouter {
   public journelRouter: Router;

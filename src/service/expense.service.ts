@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
-import { BadRequest } from "../error/httpClientError";
-import { Expense } from "../models/expenseModel";
-import { Group } from "../models/groupModel";
-import { IExpense } from "../types/expense";
-import { EntryService } from "./enetry.service";
-import { JournelServices } from "./journel.service";
-import { BalanceService } from "./balance.service";
-import { InternalServerError } from "../error/httpServerError";
+import { BadRequest } from "../error/httpClientError.js";
+import { Expense } from "../models/expenseModel.js";
+import { Group } from "../models/groupModel.js";
+import { IExpense } from "../types/expense.js";
+import { EntryService } from "./enetry.service.js";
+import { JournelServices } from "./journel.service.js";
+import { BalanceService } from "./balance.service.js";
+import { InternalServerError } from "../error/httpServerError.js";
 
 export class ExpenseService {
   private entryService: EntryService;

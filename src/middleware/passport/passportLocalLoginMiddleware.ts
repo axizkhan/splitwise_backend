@@ -1,8 +1,8 @@
 import passport from "passport";
 import * as LocalStrategy from "passport-local";
-import { UserAuthServices } from "../../service/userAuth.service";
-import { Conflict } from "../../error/httpClientError";
-import { HashingUtil } from "../../utils/hashing.util";
+import { UserAuthServices } from "../../service/userAuth.service.js";
+import { Conflict } from "../../error/httpClientError.js";
+import { HashingUtil } from "../../utils/hashing.util.js";
 
 export class PassportStrategy {
   private userService: UserAuthServices;

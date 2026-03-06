@@ -1,5 +1,5 @@
-import { Group } from "../models/groupModel";
-import { IGroup } from "../types/group";
+import { Group } from "../models/groupModel.js";
+import { IGroup } from "../types/group.js";
 import mongoose from "mongoose";
 
 export class GroupService {

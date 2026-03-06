@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { PaymentController } from "../../controller/payment.controller";
+import { PaymentController } from "../../controller/payment.controller.js";
 
 export class PaymentRouter {
   public paymentRouter: Router;

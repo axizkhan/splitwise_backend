@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { GroupRouter } from "./group.routes";
-import { ExpenseRouter } from "./expense.routes";
-import { UserRouter } from "./user.routes";
-import { JournelRouter } from "./journel.routes";
-import { PaymentRouter } from "./payment.routes";
+import { GroupRouter } from "./group.routes.js";
+import { ExpenseRouter } from "./expense.routes.js";
+import { UserRouter } from "./user.routes.js";
+import { JournelRouter } from "./journel.routes.js";
+import { PaymentRouter } from "./payment.routes.js";
 
 export class AuthRoutes {
   public authRouter: Router;

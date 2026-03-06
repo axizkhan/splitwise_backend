@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { PaymentModel } from "../models/paymentModel";
+import { PaymentModel } from "../models/paymentModel.js";
 
 export class PaymentService {
   async addPayment(

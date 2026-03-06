@@ -1,4 +1,4 @@
-import { App } from "../app";
+import { App } from "../app.js";
 import http from "http";
 import mongoose from "mongoose";
 

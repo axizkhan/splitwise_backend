@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { ExpenseService } from "../service/expense.service";
-import { NotFound, Unauthorized } from "../error/httpClientError";
-import { GroupService } from "../service/group.service";
-import { BalanceService } from "../service/balance.service";
-import { EntryService } from "../service/enetry.service";
+import { ExpenseService } from "../service/expense.service.js";
+import { NotFound, Unauthorized } from "../error/httpClientError.js";
+import { GroupService } from "../service/group.service.js";
+import { BalanceService } from "../service/balance.service.js";
+import { EntryService } from "../service/enetry.service.js";
 
 export class ExpenseController {
   private expenseService: ExpenseService;

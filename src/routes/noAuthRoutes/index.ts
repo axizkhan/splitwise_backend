@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UserRoute } from "./user.routes";
+import { UserRoute } from "./user.routes.js";
 
 export class NoAuthRoutes {
   public NoAuthRouter: Router;

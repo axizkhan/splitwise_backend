@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { IEntry } from "../types/entery";
-import { Entry } from "../models/entryModel";
-import { InternalServerError } from "../error/httpServerError";
+import { IEntry } from "../types/entery.js";
+import { Entry } from "../models/entryModel.js";
+import { InternalServerError } from "../error/httpServerError.js";
 
 export class EntryService {
   constructor() {}

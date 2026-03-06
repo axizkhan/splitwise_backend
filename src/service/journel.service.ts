@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { Journel } from "../models/journelModel";
-import { IJournel } from "../types/journel";
-import { InternalServerError } from "../error/httpServerError";
+import { Journel } from "../models/journelModel.js";
+import { IJournel } from "../types/journel.js";
+import { InternalServerError } from "../error/httpServerError.js";
 
 export class JournelServices {
   async isJournelExistThanAddEntry(

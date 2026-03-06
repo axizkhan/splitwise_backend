@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { UserRoute } from "./noAuthRoutes/user.routes";
-import { NoAuthRoutes } from "./noAuthRoutes";
-import { AuthRoutes } from "./authRoutes";
-import { IsUserExist } from "../middleware/isUserExistMiddleware";
+import { UserRoute } from "./noAuthRoutes/user.routes.js";
+import { NoAuthRoutes } from "./noAuthRoutes/index.js";
+import { AuthRoutes } from "./authRoutes/index.js";
+import { IsUserExist } from "../middleware/isUserExistMiddleware.js";
 
 export class RouteHandler {
   public Router: Router;
