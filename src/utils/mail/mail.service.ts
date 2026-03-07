@@ -19,13 +19,11 @@ export class MailService {
   async sendMail(to: string, subject: string, html: string) {
     try {
       let result = await this.transpoter.sendMail({
-        from: process.env.EMAIL_FROM || "onboarding@resend.dev",
+        from: process.env.SMTP_EMAIL,
         to,
         subject,
         html,
       });
-
-      console.log(result, "*******************email result");
     } catch (err) {
       console.log(err);
     }
