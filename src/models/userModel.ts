@@ -17,6 +17,10 @@ const userSchema = new Schema<IUser>({
   },
   mobileNumber: { type: Number },
   upiId: { type: String },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
   account: accountSchema,
   updatedAt: { type: Date, default: Date.now },
   deletedAt: { type: Date, default: null },

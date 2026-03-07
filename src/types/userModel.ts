@@ -18,7 +18,7 @@ export interface IUser {
   upiId?: string; // optional
 
   account: IAccount; // required (because schema defines it directly)
-
+  isEmailVerified: boolean;
   updatedAt?: Date; // auto generated
   deletedAt?: Date | null; // can be null
 }

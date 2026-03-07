@@ -15,6 +15,7 @@ export class UserAuthServices {
         type: "local",
         passwordHash: user.password,
       },
+      isEmailVerified: false,
     };
 
     if (user.mobileNumber) {

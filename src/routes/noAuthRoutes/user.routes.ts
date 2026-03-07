@@ -14,6 +14,10 @@ export class UserRoute {
       "/signup-local",
       this.userAuthController.userLocalSignup,
     );
+    this.UserRouter.get(
+      "/verify-email",
+      this.userAuthController.userLocalVerify,
+    );
     this.UserRouter.post(
       "/login-local",
       this.userAuthController.userLocalLogin,

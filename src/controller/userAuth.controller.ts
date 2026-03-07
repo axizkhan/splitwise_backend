@@ -6,15 +6,23 @@ import { UserAuthServices } from "../service/userAuth.service.js";
 import { Conflict, NotFound, Unauthorized } from "../error/httpClientError.js";
 import { ObjectId } from "mongoose";
 import { JWTService } from "../service/jwtToken.service.js";
+import { MailService } from "../utils/mail/mail.service.js";
+import { generateEmailToken } from "../utils/mail/mailTokenGeneration.js";
+import EmailVerificationService from "../service/emailVerification.service.js";
+import { User } from "../types/user.js";
 export class UserAuthController {
   private userAuthService: UserAuthServices;
   private hashingUtliFunctions: HashingUtil;
   private jwt: JWTService;
+  private mailService: MailService;
+  private emailVerificationService: EmailVerificationService;
 
   constructor() {
     this.userAuthService = new UserAuthServices();
     this.hashingUtliFunctions = new HashingUtil();
+    this.mailService = new MailService();
     this.jwt = new JWTService();
+    this.emailVerificationService = new EmailVerificationService();
   }
 
   userLocalSignup = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,9 +33,54 @@ export class UserAuthController {
 
     user.password = hashPassword;
 
-    let newUser = await this.userAuthService.userLocalSignup(user);
-
     try {
+      const token = generateEmailToken();
+
+      let isEmailVerifyCreated =
+        await this.emailVerificationService.createEmailVerification({
+          token,
+          user,
+        });
+
+      if (isEmailVerifyCreated) {
+        const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+
+        await this.mailService.sendMail(
+          user.email,
+          "Verify your email",
+          `
+          <h2>Email Verification</h2>
+          <p>Click the link below to verify your email</p>
+          <a href="${verifyUrl}">Verify Email</a>
+          `,
+        );
+      }
+
+      const resData = {
+        data: "Check you email",
+        message: "User signup successfully",
+        statusCode: 201,
+      };
+      req.resData = resData;
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  userLocalVerify = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let { token } = req.query;
+      let userData =
+        await this.emailVerificationService.findEmailForVerification(
+          token as string,
+        );
+
+      let newUser = await this.userAuthService.userLocalSignup(
+        userData as User,
+      );
+
       const accessToken = await this.jwt.grantAccessToken(newUser._id);
 
       const resData = {
@@ -47,9 +100,7 @@ export class UserAuthController {
       req.resData = resData;
 
       next();
-    } catch (error) {
-      next(error);
-    }
+    } catch (err) {}
   };
 
   userLocalLogin = async (req: Request, res: Response, next: NextFunction) => {
