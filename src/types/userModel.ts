@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export type IAccountType = "google" | "local";
 
 export interface IAccount {
@@ -7,6 +9,7 @@ export interface IAccount {
 }
 
 export interface IUser {
+  _id?: mongoose.Types.ObjectId;
   emailId: string;
 
   name: {

@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { GroupService } from "../service/group.service.js";
 
 import { Unauthorized } from "../error/httpClientError.js";
 import { JournelServices } from "../service/journel.service.js";

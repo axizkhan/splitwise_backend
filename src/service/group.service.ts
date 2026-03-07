@@ -36,7 +36,7 @@ export class GroupService {
       "members.memberId": userId,
     });
     if (group) {
-      return group._id;
+      return group;
     }
     return null;
   }
@@ -170,14 +170,18 @@ export class GroupService {
       const group = await Group.findOne({
         _id: groupId,
         createdBy: new mongoose.Types.ObjectId(userId),
+      }).populate({
+        path: "members.memberId",
+        select: "emailId name",
       });
 
       if (!group) {
         return null;
       }
 
-      const result = await Group.deleteOne({ _id: groupId });
-      return result;
+      await Group.deleteOne({ _id: groupId });
+
+      return group;
     } catch (err) {
       throw err;
     }

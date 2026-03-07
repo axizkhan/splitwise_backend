@@ -8,21 +8,25 @@ import {
   Unauthorized,
 } from "../error/httpClientError.js";
 import { UserAuthServices } from "../service/userAuth.service.js";
-import { group } from "node:console";
-import { Group } from "../models/groupModel.js";
+
 import { BalanceService } from "../service/balance.service.js";
 import {
   BalanceResponse,
   GroupSummaryResponse,
 } from "../types/groupDetail.types";
+
+import { MailService } from "../utils/mail/mail.service.js";
 export class GroupController {
   private groupService: GroupService;
   private userService: UserAuthServices;
   private balanceService: BalanceService;
+  private mailService: MailService;
+
   constructor() {
     this.groupService = new GroupService();
     this.userService = new UserAuthServices();
     this.balanceService = new BalanceService();
+    this.mailService = new MailService();
   }
 
   createGroup = async (req: Request, res: Response, next: NextFunction) => {
@@ -72,10 +76,40 @@ export class GroupController {
       }
 
       const isUserAdd = await this.groupService.addUserToGroup(
-        group.toString(),
+        group._id.toString(),
         newMember._id.toString(),
       );
       if (isUserAdd) {
+        let senderData = await this.userService.findUserEmail(id);
+
+        if (senderData) {
+          await this.mailService.sendMail(
+            newMember.emailId,
+            "You've been added to a SplitWise group",
+            `
+<div style="font-family: Arial, sans-serif; line-height:1.6">
+  <h2>You were added to a group</h2>
+
+  <p>Hi ${newMember.name.firstName || "there"},</p>
+
+  <p><strong>${senderData.name.firstName}</strong> has added you to the group 
+  <strong>"${group.name}"</strong> on SplitWise.</p>
+
+  <p>You can now view and split expenses with the group members.</p>
+
+  <br/>
+
+  <p>If you were not expecting this invitation, you can safely ignore this email.</p>
+
+  <br/>
+
+  <p>Best regards,<br/>
+  <strong>Splitly Team</strong></p>
+</div>
+`,
+          );
+        }
+
         const resObject = {
           data: "",
           statusCode: 201,
@@ -251,6 +285,8 @@ export class GroupController {
         userId,
       );
 
+      let deletedBy = await this.userService.findUserEmail(userId);
+
       if (!result) {
         throw new Unauthorized("Only the group creator can delete this group");
       }
@@ -261,7 +297,38 @@ export class GroupController {
         data: {},
       };
 
-      return next();
+      next();
+      for (let member of result.members) {
+        if (!(member.memberId instanceof mongoose.Types.ObjectId)) {
+          await this.mailService.sendMail(
+            member.memberId.emailId,
+            "A SplitWise group was deleted",
+            `
+<div style="font-family: Arial, sans-serif; line-height:1.6">
+  <h2>Group Deleted</h2>
+
+  <p>Hi ${member.memberId.name.firstName || "there"},</p>
+
+  <p>The group <strong>"${result.name}"</strong> has been deleted by 
+  <strong>${deletedBy?.name.firstName}</strong>.</p>
+
+  <p>You will no longer be able to access this group or its expenses.</p>
+
+  <br/>
+
+  <p>If you believe this was done by mistake, please contact the group members.</p>
+
+  <br/>
+
+  <p>Best regards,<br/>
+  <strong>SplitWise Team</strong></p>
+</div>
+`,
+          );
+        }
+      }
+
+      return;
     } catch (error) {
       return next(error);
     }

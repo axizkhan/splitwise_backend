@@ -3,8 +3,8 @@ import { HashingUtil } from "../utils/hashing.util.js";
 import passport from "passport";
 
 import { UserAuthServices } from "../service/userAuth.service.js";
-import { Conflict, NotFound, Unauthorized } from "../error/httpClientError.js";
-import { ObjectId } from "mongoose";
+import { Unauthorized } from "../error/httpClientError.js";
+
 import { JWTService } from "../service/jwtToken.service.js";
 import { MailService } from "../utils/mail/mail.service.js";
 import { generateEmailToken } from "../utils/mail/mailTokenGeneration.js";
@@ -71,6 +71,7 @@ export class UserAuthController {
 
   userLocalVerify = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log("Verify got request");
       let { token } = req.query;
       let userData =
         await this.emailVerificationService.findEmailForVerification(
@@ -83,6 +84,29 @@ export class UserAuthController {
 
       const accessToken = await this.jwt.grantAccessToken(newUser._id);
 
+      await this.mailService.sendMail(
+        newUser.emailId,
+        "Welcome to SplitWise 🎉",
+        `
+<div style="font-family: Arial, sans-serif; line-height:1.6">
+  <h2>Welcome to SplitWise</h2>
+
+  <p>Hi ${newUser.name || "there"},</p>
+
+  <p>Your account has been successfully created.</p>
+
+  <p>You can now start tracking and splitting expenses with your friends and groups.</p>
+
+  <p>We're happy to have you with us!</p>
+
+  <br/>
+
+  <p>Best regards,<br/>
+  <strong>SplitWise Team</strong></p>
+</div>
+`,
+      );
+
       const resData = {
         data: {
           user: {
@@ -93,14 +117,16 @@ export class UserAuthController {
           },
           accessToken,
         },
-        message: "User signup successfully",
+        message: "User verified successfully",
         statusCode: 201,
       };
 
       req.resData = resData;
 
-      next();
-    } catch (err) {}
+      return next();
+    } catch (err) {
+      throw err;
+    }
   };
 
   userLocalLogin = async (req: Request, res: Response, next: NextFunction) => {
@@ -146,7 +172,35 @@ export class UserAuthController {
               };
 
               req.resData = resData;
+
               next();
+
+              await this.mailService.sendMail(
+                user.emailId,
+                "New Login to Your SplitWise Account",
+                `
+<div style="font-family: Arial, sans-serif; line-height:1.6">
+  <h2>New Login Detected</h2>
+
+  <p>Hi ${user.name || "there"},</p>
+
+  <p>We noticed a login to your <strong>SplitWise</strong> account.</p>
+
+  <p><strong>Login Details:</strong></p>
+  <ul>
+    <li>Time: ${new Date().toLocaleString()}</li>
+    <li>IP Address: ${req.ip}</li>
+  </ul>
+
+  <p>If this was you, you can safely ignore this email.</p>
+
+  <br/>
+
+  <p>Best regards,<br/>
+  <strong>SplitWise Team</strong></p>
+</div>
+`,
+              );
             } catch (tokenErr) {
               next(tokenErr);
             }

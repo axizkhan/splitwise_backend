@@ -4,17 +4,24 @@ import { NotFound, Unauthorized } from "../error/httpClientError.js";
 import { GroupService } from "../service/group.service.js";
 import { BalanceService } from "../service/balance.service.js";
 import { EntryService } from "../service/enetry.service.js";
+import { UserAuthServices } from "../service/userAuth.service.js";
+import { MailService } from "../utils/mail/mail.service.js";
+import mongoose from "mongoose";
 
 export class ExpenseController {
   private expenseService: ExpenseService;
   private groupService: GroupService;
   private balanceService: BalanceService;
   private entryService: EntryService;
+  private userService: UserAuthServices;
+  private mailService: MailService;
   constructor() {
     this.expenseService = new ExpenseService();
     this.groupService = new GroupService();
     this.balanceService = new BalanceService();
     this.entryService = new EntryService();
+    this.userService = new UserAuthServices();
+    this.mailService = new MailService();
   }
 
   addNewExpenseToGroup = async (
@@ -42,12 +49,54 @@ export class ExpenseController {
         id,
       );
 
+      let group = await this.groupService.getGroup(groupId as string, id);
+      let sender = await this.userService.findUserEmail(id);
+
+      if (group) {
+        for (let member of group.members) {
+          if (
+            member.memberId._id &&
+            member.memberId._id.toString() !== id &&
+            !(member.memberId instanceof mongoose.Types.ObjectId)
+          ) {
+            await this.mailService.sendMail(
+              member.memberId.emailId,
+              "New Expense Added in Your Splitly Group",
+              `
+<div style="font-family: Arial, sans-serif; line-height:1.6">
+  <h2>New Expense Added</h2>
+
+  <p>Hi ${member.memberId.name.firstName || "there"},</p>
+
+  <p><strong>${sender?.name.firstName}</strong> added a new expense in the group 
+  <strong>"${group.name}"</strong>.</p>
+
+  <p><strong>Expense Details:</strong></p>
+  <ul>
+    <li>Description: ${data.title}</li>
+    <li>Amount: ₹${data.amount}</li>
+  </ul>
+
+  <p>Please check the group to view how the expense is split.</p>
+
+  <br/>
+
+  <p>Best regards,<br/>
+  <strong>Splitly Team</strong></p>
+</div>
+`,
+            );
+          }
+        }
+      }
+
       req.resData = {
         statusCode: 200,
         data,
         message: "Success",
       };
-      return next();
+      next();
+      return;
     }
 
     throw new Unauthorized();
@@ -114,7 +163,6 @@ export class ExpenseController {
         const oldAmount = expense.amount;
 
         try {
-          // Step 1: Reverse the old expense
           await this.entryService.updateEntry(
             expenseId as string,
             -oldAmount,
@@ -133,7 +181,6 @@ export class ExpenseController {
             memberCount,
           );
 
-          // Step 2: Apply the new expense
           await this.entryService.updateEntry(
             expenseId as string,
             newExpenseAmount,
@@ -158,13 +205,54 @@ export class ExpenseController {
             newExpenseAmount,
           );
 
+          let group = await this.groupService.getGroup(groupId, req.user.id);
+          let editedBy = await this.userService.findUserEmail(req.user.id);
+
           req.resData = {
             statusCode: 200,
             message: "Expense Updated Successfully",
             data: updatedExpense,
           };
 
-          return next();
+          next();
+          if (group && editedBy) {
+            for (let member of group.members) {
+              if (
+                member.memberId._id &&
+                member.memberId._id.toString() !== req.user.id &&
+                !(member.memberId instanceof mongoose.Types.ObjectId)
+              ) {
+                await this.mailService.sendMail(
+                  member.memberId.emailId,
+                  "Expense Updated in Your SplitWise Group",
+                  `
+<div style="font-family: Arial, sans-serif; line-height:1.6">
+  <h2>Expense Updated</h2>
+
+  <p>Hi ${member.memberId.name.firstName || "there"},</p>
+
+  <p><strong>${editedBy.name.firstName}</strong> updated an expense in the group 
+  <strong>"${group.name}"</strong>.</p>
+
+  <p><strong>Updated Expense Details:</strong></p>
+  <ul>
+    <li>Description: ${updatedExpense?.title}</li>
+    <li>New Amount: ₹${updatedExpense?.amount}</li>
+  </ul>
+
+  <p>Please check the group to see the updated split.</p>
+
+  <br/>
+
+  <p>Best regards,<br/>
+  <strong>SplitWise Team</strong></p>
+</div>
+`,
+                );
+              }
+            }
+          }
+          return;
         } catch (err) {
           throw err;
         }
@@ -222,13 +310,57 @@ export class ExpenseController {
           expenseId as string,
         );
 
+        let deletedByExpense = await this.userService.findUserEmail(
+          req.user.id,
+        );
+        let group = await this.groupService.getGroup(groupId, req.user.id);
+
         req.resData = {
           statusCode: 200,
           message: "Expense Deleted Successfully",
           data: deletedExpense,
         };
 
-        return next();
+        next();
+
+        if (deletedByExpense && group) {
+          for (let member of group.members) {
+            if (
+              member.memberId._id &&
+              member.memberId._id.toString() !== req.user.id &&
+              !(member.memberId instanceof mongoose.Types.ObjectId)
+            ) {
+              await this.mailService.sendMail(
+                member.memberId.emailId,
+                "Expense Deleted in Your Splitly Group",
+                `
+<div style="font-family: Arial, sans-serif; line-height:1.6">
+  <h2>Expense Deleted</h2>
+
+  <p>Hi ${member.memberId.name.firstName || "there"},</p>
+
+  <p><strong>${deletedByExpense.name.firstName}</strong> deleted an expense from the group 
+  <strong>"${group.name}"</strong>.</p>
+
+  <p><strong>Deleted Expense Details:</strong></p>
+  <ul>
+    <li>Description: ${deletedExpense?.title}</li>
+    <li>Amount: ₹${deletedExpense?.amount}</li>
+  </ul>
+
+  <p>The balances in the group may have been updated accordingly.</p>
+
+  <br/>
+
+  <p>Best regards,<br/>
+  <strong>Splitly Team</strong></p>
+</div>
+`,
+              );
+            }
+          }
+        }
+        return;
       } catch (err) {
         throw err;
       }

@@ -37,4 +37,17 @@ export class UserAuthServices {
     const user = await UserModel.findOne({ emailId: email });
     return user;
   }
+
+  async findUserEmail(userId: string) {
+    try {
+      let result = await UserModel.findOne(
+        { _id: userId },
+        { emailId: 1, _id: 0, name: 1 },
+      );
+
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

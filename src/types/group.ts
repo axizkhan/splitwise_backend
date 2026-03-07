@@ -1,7 +1,8 @@
 import { Types } from "mongoose";
+import { IUser } from "./userModel";
 
 export interface IGroupMember {
-  memberId: Types.ObjectId;
+  memberId: Types.ObjectId | IUser;
   amountOwed: number;
   amountToBeRecieved: number;
 }
