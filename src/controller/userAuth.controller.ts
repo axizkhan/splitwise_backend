@@ -45,6 +45,14 @@ export class UserAuthController {
       if (isEmailVerifyCreated) {
         const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
 
+        const resData = {
+          data: "Check you email",
+          message: "User signup successfully",
+          statusCode: 201,
+        };
+        req.resData = resData;
+
+        next();
         await this.mailService.sendMail(
           user.email,
           "Verify your email",
@@ -56,14 +64,7 @@ export class UserAuthController {
         );
       }
 
-      const resData = {
-        data: "Check you email",
-        message: "User signup successfully",
-        statusCode: 201,
-      };
-      req.resData = resData;
-
-      next();
+      return;
     } catch (error) {
       next(error);
     }
@@ -71,7 +72,6 @@ export class UserAuthController {
 
   userLocalVerify = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("Verify got request");
       let { token } = req.query;
       let userData =
         await this.emailVerificationService.findEmailForVerification(
@@ -84,8 +84,25 @@ export class UserAuthController {
 
       const accessToken = await this.jwt.grantAccessToken(newUser._id);
 
+      const resData = {
+        data: {
+          user: {
+            id: newUser._id,
+            email: newUser.email,
+            firstName: newUser.name?.firstName || "",
+            lastName: newUser.name?.lastName || "",
+          },
+          accessToken,
+        },
+        message: "User verified successfully",
+        statusCode: 201,
+      };
+
+      req.resData = resData;
+      next();
+
       await this.mailService.sendMail(
-        newUser.emailId,
+        newUser.email,
         "Welcome to SplitWise 🎉",
         `
 <div style="font-family: Arial, sans-serif; line-height:1.6">
@@ -103,27 +120,10 @@ export class UserAuthController {
 
   <p>Best regards,<br/>
   <strong>SplitWise Team</strong></p>
-</div>
-`,
+  </div>
+  `,
       );
-
-      const resData = {
-        data: {
-          user: {
-            id: newUser._id,
-            email: newUser.emailId,
-            firstName: newUser.name?.firstName || "",
-            lastName: newUser.name?.lastName || "",
-          },
-          accessToken,
-        },
-        message: "User verified successfully",
-        statusCode: 201,
-      };
-
-      req.resData = resData;
-
-      return next();
+      return;
     } catch (err) {
       throw err;
     }

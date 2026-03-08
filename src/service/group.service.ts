@@ -70,7 +70,7 @@ export class GroupService {
       "members.memberId": userId,
     }).populate(
       "members.memberId",
-      "email mobileNumber upiId _id name.firstName lastName",
+      "emailId mobileNumber upiId _id name.firstName lastName",
     );
     return group;
   }

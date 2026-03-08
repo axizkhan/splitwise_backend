@@ -43,6 +43,11 @@ export class ExpenseService {
 
     const createdExpense = await Expense.create(expenseDocument);
 
+    await Group.updateOne(
+      { _id: groupId },
+      { $inc: { totalAmount: expense.amount } },
+    );
+
     let averageExpense = expense.amount / group.members.length;
     let creatorAmount = averageExpense * (group.members.length - 1);
 
@@ -96,12 +101,9 @@ export class ExpenseService {
       }
     }
 
-    // Update borrower members with $inc (atomic operation)
-    await Group.updateMany(
-      {
-        _id: groupId,
-        "members.memberId": { $ne: new mongoose.Types.ObjectId(userId) },
-      },
+    // Update borrower members with $inc
+    await Group.updateOne(
+      { _id: groupId },
       {
         $inc: {
           "members.$[borrower].amountOwed": averageExpense,
@@ -114,7 +116,7 @@ export class ExpenseService {
       },
     );
 
-    // Update creator with $inc (atomic operation)
+    // Update creator with $inc
     await Group.updateOne(
       { _id: groupId },
       {

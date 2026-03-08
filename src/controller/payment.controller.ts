@@ -87,7 +87,7 @@ export class PaymentController {
 
       if (paidTo && paidBy) {
         await this.mailService.sendMail(
-          paidTo.emailId,
+          paidTo.email,
           "Payment Received on SplitWise",
           `
 <div style="font-family: Arial, sans-serif; line-height:1.6">

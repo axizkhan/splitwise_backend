@@ -52,6 +52,12 @@ export class ExpenseController {
       let group = await this.groupService.getGroup(groupId as string, id);
       let sender = await this.userService.findUserEmail(id);
 
+      req.resData = {
+        statusCode: 200,
+        data,
+        message: "Success",
+      };
+      next();
       if (group) {
         for (let member of group.members) {
           if (
@@ -89,13 +95,6 @@ export class ExpenseController {
           }
         }
       }
-
-      req.resData = {
-        statusCode: 200,
-        data,
-        message: "Success",
-      };
-      next();
       return;
     }
 

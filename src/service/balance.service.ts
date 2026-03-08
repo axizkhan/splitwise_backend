@@ -9,32 +9,35 @@ export class BalanceService {
     journelId: string,
     lenderId: string,
     borowerId: string,
-
     groupId: string,
     amount: number,
   ) {
-    try {
-      const result = await BalanceModel.updateOne(
-        {
-          journelId,
-          groupId,
-          "balances.userId": { $all: [lenderId, borowerId] },
+    const result = await BalanceModel.updateOne(
+      {
+        journelId: new mongoose.Types.ObjectId(journelId),
+        groupId: new mongoose.Types.ObjectId(groupId),
+        balances: {
+          $all: [
+            { $elemMatch: { userId: new mongoose.Types.ObjectId(borowerId) } },
+            { $elemMatch: { userId: new mongoose.Types.ObjectId(lenderId) } },
+          ],
         },
-        {
-          $inc: {
-            "balances.$[u1].receivedAmount": amount,
-            "balances.$[u2].receivedAmount": -amount,
-          },
+      },
+      {
+        $inc: {
+          "balances.$[borrower].receivedAmount": -amount,
+          "balances.$[lender].receivedAmount": amount,
         },
-        {
-          arrayFilters: [{ "u1.userId": borowerId }, { "u2.userId": lenderId }],
-        },
-      );
+      },
+      {
+        arrayFilters: [
+          { "borrower.userId": new mongoose.Types.ObjectId(borowerId) },
+          { "lender.userId": new mongoose.Types.ObjectId(lenderId) },
+        ],
+      },
+    );
 
-      return result;
-    } catch (err) {
-      throw err;
-    }
+    return result;
   }
   async newBalance(
     groupId: string,
