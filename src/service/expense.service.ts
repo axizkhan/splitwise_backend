@@ -3,20 +3,14 @@ import { BadRequest } from "../error/httpClientError.js";
 import { Expense } from "../models/expenseModel.js";
 import { Group } from "../models/groupModel.js";
 import { IExpense } from "../types/expense.js";
-import { EntryService } from "./enetry.service.js";
-import { JournelServices } from "./journel.service.js";
-import { BalanceService } from "./balance.service.js";
 import { InternalServerError } from "../error/httpServerError.js";
+import { services } from "../store/serviceContainer.js";
 
 export class ExpenseService {
-  private entryService: EntryService;
-  private journelService: JournelServices;
-  private balanceService: BalanceService;
-  constructor() {
-    this.entryService = new EntryService();
-    this.journelService = new JournelServices();
-    this.balanceService = new BalanceService();
-  }
+  private entryService = services.entryService;
+  private journelService = services.journelService;
+  private balanceService = services.balanceService;
+
   async addExpense(
     expense: { title: string; amount: number; description?: string },
     groupId: string,

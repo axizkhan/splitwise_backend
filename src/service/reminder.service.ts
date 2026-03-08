@@ -2,13 +2,11 @@ import { BadRequest } from "../error/httpClientError";
 import { Group } from "../models/groupModel";
 import { ReminderModel } from "../models/reminderModel";
 import { UserModel } from "../models/userModel";
-import { JournelServices } from "./journel.service";
+import { services } from "../store/serviceContainer.js";
 
-export default class ReminderService {
-  private journalService: JournelServices;
-  constructor() {
-    this.journalService = new JournelServices();
-  }
+export class ReminderService {
+  private journalService = services.journelService;
+
   sendReminder = async (
     groupId: string,
     senderId: string,

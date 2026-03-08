@@ -2,27 +2,24 @@ import { Request, Response, NextFunction } from "express";
 import { HashingUtil } from "../utils/hashing.util.js";
 import passport from "passport";
 
-import { UserAuthServices } from "../service/userAuth.service.js";
 import { Unauthorized } from "../error/httpClientError.js";
 
-import { JWTService } from "../service/jwtToken.service.js";
-import { MailService } from "../utils/mail/mail.service.js";
 import { generateEmailToken } from "../utils/mail/mailTokenGeneration.js";
-import EmailVerificationService from "../service/emailVerification.service.js";
+
+import { services } from "../store/serviceContainer.js";
 import { User } from "../types/user.js";
+
 export class UserAuthController {
-  private userAuthService: UserAuthServices;
+  private userAuthService = services.userService;
+  private jwt = services.jwtService;
+  private mailService = services.mailService;
+  private emailVerificationService = services.emailVerificationService;
+  private groupService = services.groupService;
+  private userInviteService = services.userInviteService;
   private hashingUtliFunctions: HashingUtil;
-  private jwt: JWTService;
-  private mailService: MailService;
-  private emailVerificationService: EmailVerificationService;
 
   constructor() {
-    this.userAuthService = new UserAuthServices();
     this.hashingUtliFunctions = new HashingUtil();
-    this.mailService = new MailService();
-    this.jwt = new JWTService();
-    this.emailVerificationService = new EmailVerificationService();
   }
 
   userLocalSignup = async (req: Request, res: Response, next: NextFunction) => {
@@ -88,7 +85,7 @@ export class UserAuthController {
         data: {
           user: {
             id: newUser._id,
-            email: newUser.email,
+            email: newUser.emailId,
             firstName: newUser.name?.firstName || "",
             lastName: newUser.name?.lastName || "",
           },
@@ -98,11 +95,24 @@ export class UserAuthController {
         statusCode: 201,
       };
 
+      const invites = await this.userInviteService.findInvitesByEmail(
+        newUser.emailId,
+      );
+
+      for (const invite of invites) {
+        await this.groupService.addUserToGroup(
+          invite.groupId.toString(),
+          newUser._id.toString(),
+        );
+      }
+
+      await this.userInviteService.deleteInvitesByEmail(newUser.emailId);
+
       req.resData = resData;
       next();
 
       await this.mailService.sendMail(
-        newUser.email,
+        newUser.emailId,
         "Welcome to SplitWise 🎉",
         `
 <div style="font-family: Arial, sans-serif; line-height:1.6">

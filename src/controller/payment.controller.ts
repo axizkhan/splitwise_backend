@@ -1,31 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { GroupService } from "../service/group.service.js";
 
 import { Unauthorized, UnprocessableEntity } from "../error/httpClientError.js";
-import { JournelServices } from "../service/journel.service.js";
-import { PaymentService } from "../service/payment.service.js";
-import { EntryService } from "../service/enetry.service.js";
-import { BalanceService } from "../service/balance.service.js";
-import { UserAuthServices } from "../service/userAuth.service.js";
-import { MailService } from "../utils/mail/mail.service.js";
+
+import { services } from "../store/serviceContainer.js";
 
 export class PaymentController {
-  private paymentService: PaymentService;
-  private entryService: EntryService;
-  private balanceService: BalanceService;
-  private groupService: GroupService;
-  private journelService: JournelServices;
-  private userService: UserAuthServices;
-  private mailService: MailService;
-  constructor() {
-    this.paymentService = new PaymentService();
-    this.entryService = new EntryService();
-    this.balanceService = new BalanceService();
-    this.groupService = new GroupService();
-    this.journelService = new JournelServices();
-    this.userService = new UserAuthServices();
-    this.mailService = new MailService();
-  }
+  private paymentService = services.paymentService;
+  private entryService = services.entryService;
+  private balanceService = services.balanceService;
+  private groupService = services.groupService;
+  private journelService = services.journelService;
+  private userService = services.userService;
+  private mailService = services.mailService;
 
   newPaymment = async (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {
@@ -87,7 +73,7 @@ export class PaymentController {
 
       if (paidTo && paidBy) {
         await this.mailService.sendMail(
-          paidTo.email,
+          paidTo.emailId,
           "Payment Received on SplitWise",
           `
 <div style="font-family: Arial, sans-serif; line-height:1.6">

@@ -1,17 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { GroupService } from "../service/group.service.js";
 
+import { services } from "../store/serviceContainer.js";
 import { Unauthorized } from "../error/httpClientError.js";
-import ReminderService from "../service/reminder.service.js";
-import { MailService } from "../utils/mail/mail.service.js";
 
 export class ReminderController {
-  private reminderService: ReminderService;
-  private mailService: MailService;
-  constructor() {
-    this.reminderService = new ReminderService();
-    this.mailService = new MailService();
-  }
+  private reminderService = services.reminderService;
+  private mailService = services.mailService;
   notifyMember = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) throw new Unauthorized();
 

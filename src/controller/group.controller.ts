@@ -1,33 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
-import { GroupService } from "../service/group.service.js";
+
 import { InternalServerError } from "../error/httpServerError.js";
 import {
   BadRequest,
   NotFound,
   Unauthorized,
 } from "../error/httpClientError.js";
-import { UserAuthServices } from "../service/userAuth.service.js";
 
-import { BalanceService } from "../service/balance.service.js";
+import { services } from "../store/serviceContainer.js";
+
 import {
   BalanceResponse,
   GroupSummaryResponse,
 } from "../types/groupDetail.types";
 
-import { MailService } from "../utils/mail/mail.service.js";
 export class GroupController {
-  private groupService: GroupService;
-  private userService: UserAuthServices;
-  private balanceService: BalanceService;
-  private mailService: MailService;
-
-  constructor() {
-    this.groupService = new GroupService();
-    this.userService = new UserAuthServices();
-    this.balanceService = new BalanceService();
-    this.mailService = new MailService();
-  }
+  private groupService = services.groupService;
+  private userService = services.userService;
+  private balanceService = services.balanceService;
+  private mailService = services.mailService;
+  private userInviteService = services.userInviteService;
 
   createGroup = async (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {
@@ -72,7 +65,40 @@ export class GroupController {
         await this.userService.findUserLocalLogin(newMemberEmail);
 
       if (!newMember) {
-        throw new NotFound("User Dont Exist To Add In Group");
+        await this.userInviteService.createInvite(
+          newMemberEmail,
+          groupId as string,
+          id,
+        );
+
+        const resObject = {
+          data: "",
+          statusCode: 200,
+          message: "Invitation sent to user email",
+        };
+
+        req.resData = resObject;
+        next();
+        await this.mailService.sendMail(
+          newMemberEmail,
+          "You've been invited to a Splitly group",
+          `
+<div style="font-family: Arial, sans-serif; line-height:1.6">
+  <h2>Group Invitation</h2>
+
+  <p>You have been invited to join the group <strong>${group.name}</strong> on Splitly.</p>
+
+  <p>Please create an account using this email to automatically join the group.</p>
+
+  <br/>
+
+  <p>Best regards,<br/>
+  <strong>Splitly Team</strong></p>
+</div>
+`,
+        );
+
+        return;
       }
 
       const isUserAdd = await this.groupService.addUserToGroup(

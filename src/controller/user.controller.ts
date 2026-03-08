@@ -1,13 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { GroupService } from "../service/group.service.js";
-
+import { services } from "../store/serviceContainer.js";
 import { Unauthorized } from "../error/httpClientError.js";
 
 export class UserController {
-  private groupService: GroupService;
-  constructor() {
-    this.groupService = new GroupService();
-  }
+  private groupService = services.groupService;
 
   getAllGroup = async (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {

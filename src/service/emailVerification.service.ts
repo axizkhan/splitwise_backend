@@ -1,7 +1,7 @@
 import EmailVerificationModel from "../models/emailVerficationModel.js";
 import { User } from "../types/user";
 
-export default class EmailVerificationService {
+export class EmailVerificationService {
   constructor() {}
 
   async createEmailVerification(verficationEmailData: {

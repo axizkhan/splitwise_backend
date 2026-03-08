@@ -1,13 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-
+import { services } from "../store/serviceContainer.js";
 import { Unauthorized } from "../error/httpClientError.js";
-import { JournelServices } from "../service/journel.service.js";
 
 export class JournelController {
-  private journelService: JournelServices;
-  constructor() {
-    this.journelService = new JournelServices();
-  }
+  private journelService = services.journelService;
 
   getJournelEntries = async (
     req: Request,

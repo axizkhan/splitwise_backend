@@ -6,23 +6,16 @@ import { BalanceService } from "../service/balance.service.js";
 import { EntryService } from "../service/enetry.service.js";
 import { UserAuthServices } from "../service/userAuth.service.js";
 import { MailService } from "../utils/mail/mail.service.js";
+import { services } from "../store/serviceContainer.js";
 import mongoose from "mongoose";
 
 export class ExpenseController {
-  private expenseService: ExpenseService;
-  private groupService: GroupService;
-  private balanceService: BalanceService;
-  private entryService: EntryService;
-  private userService: UserAuthServices;
-  private mailService: MailService;
-  constructor() {
-    this.expenseService = new ExpenseService();
-    this.groupService = new GroupService();
-    this.balanceService = new BalanceService();
-    this.entryService = new EntryService();
-    this.userService = new UserAuthServices();
-    this.mailService = new MailService();
-  }
+  private expenseService = services.expenseService;
+  private groupService = services.groupService;
+  private balanceService = services.balanceService;
+  private entryService = services.entryService;
+  private userService = services.userService;
+  private mailService = services.mailService;
 
   addNewExpenseToGroup = async (
     req: Request,
