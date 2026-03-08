@@ -9,7 +9,7 @@ import {
 } from "../error/httpClientError.js";
 
 import { services } from "../store/serviceContainer.js";
-
+import { MailService } from "../utils/mail/mail.service.js";
 import {
   BalanceResponse,
   GroupSummaryResponse,
@@ -19,8 +19,12 @@ export class GroupController {
   private groupService = services.groupService;
   private userService = services.userService;
   private balanceService = services.balanceService;
-  private mailService = services.mailService;
+  private mailService: MailService;
   private userInviteService = services.userInviteService;
+
+  constructor() {
+    this.mailService = new MailService();
+  }
 
   createGroup = async (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {
@@ -79,6 +83,8 @@ export class GroupController {
 
         req.resData = resObject;
         next();
+        const signupUrl = `${process.env.FRONTEND_URL}/signup`;
+
         await this.mailService.sendMail(
           newMemberEmail,
           "You've been invited to a Splitly group",
@@ -89,6 +95,28 @@ export class GroupController {
   <p>You have been invited to join the group <strong>${group.name}</strong> on Splitly.</p>
 
   <p>Please create an account using this email to automatically join the group.</p>
+
+  <p>
+    <a 
+      href="${signupUrl}" 
+      style="
+        display:inline-block;
+        padding:10px 18px;
+        background:#4f46e5;
+        color:white;
+        text-decoration:none;
+        border-radius:6px;
+        font-weight:bold;
+      "
+    >
+      Create Account
+    </a>
+  </p>
+
+  <br/>
+
+  <p>If the button doesn't work, copy and paste this link into your browser:</p>
+  <p>${signupUrl}</p>
 
   <br/>
 

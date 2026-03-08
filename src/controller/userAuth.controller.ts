@@ -3,16 +3,16 @@ import { HashingUtil } from "../utils/hashing.util.js";
 import passport from "passport";
 
 import { Unauthorized } from "../error/httpClientError.js";
-
+import { MailService } from "../utils/mail/mail.service.js";
 import { generateEmailToken } from "../utils/mail/mailTokenGeneration.js";
-
+import { JWTService } from "../service/jwtToken.service.js";
 import { services } from "../store/serviceContainer.js";
 import { User } from "../types/user.js";
 
 export class UserAuthController {
   private userAuthService = services.userService;
-  private jwt = services.jwtService;
-  private mailService = services.mailService;
+  private jwt: JWTService;
+  private mailService: MailService;
   private emailVerificationService = services.emailVerificationService;
   private groupService = services.groupService;
   private userInviteService = services.userInviteService;
@@ -20,6 +20,8 @@ export class UserAuthController {
 
   constructor() {
     this.hashingUtliFunctions = new HashingUtil();
+    this.jwt = new JWTService();
+    this.mailService = new MailService();
   }
 
   userLocalSignup = async (req: Request, res: Response, next: NextFunction) => {

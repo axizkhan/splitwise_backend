@@ -1,10 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { ExpenseService } from "../service/expense.service.js";
+
 import { NotFound, Unauthorized } from "../error/httpClientError.js";
-import { GroupService } from "../service/group.service.js";
-import { BalanceService } from "../service/balance.service.js";
-import { EntryService } from "../service/enetry.service.js";
-import { UserAuthServices } from "../service/userAuth.service.js";
+
 import { MailService } from "../utils/mail/mail.service.js";
 import { services } from "../store/serviceContainer.js";
 import mongoose from "mongoose";
@@ -15,7 +12,11 @@ export class ExpenseController {
   private balanceService = services.balanceService;
   private entryService = services.entryService;
   private userService = services.userService;
-  private mailService = services.mailService;
+  private mailService: MailService;
+
+  constructor() {
+    this.mailService = new MailService();
+  }
 
   addNewExpenseToGroup = async (
     req: Request,

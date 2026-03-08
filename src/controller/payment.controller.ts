@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { Unauthorized, UnprocessableEntity } from "../error/httpClientError.js";
-
+import { MailService } from "../utils/mail/mail.service.js";
 import { services } from "../store/serviceContainer.js";
 
 export class PaymentController {
@@ -11,8 +11,11 @@ export class PaymentController {
   private groupService = services.groupService;
   private journelService = services.journelService;
   private userService = services.userService;
-  private mailService = services.mailService;
+  private mailService: MailService;
 
+  constructor() {
+    this.mailService = new MailService();
+  }
   newPaymment = async (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {
       let { groupId } = req.body;
