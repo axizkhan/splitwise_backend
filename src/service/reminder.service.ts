@@ -1,7 +1,7 @@
-import { BadRequest } from "../error/httpClientError";
-import { Group } from "../models/groupModel";
-import { ReminderModel } from "../models/reminderModel";
-import { UserModel } from "../models/userModel";
+import { BadRequest } from "../error/httpClientError.js";
+import { Group } from "../models/groupModel.js";
+import { ReminderModel } from "../models/reminderModel.js";
+import { UserModel } from "../models/userModel.js";
 import { services } from "../store/serviceContainer.js";
 
 export class ReminderService {
