@@ -95,7 +95,7 @@ export class PaymentController {
   <br/>
 
   <p>Best regards,<br/>
-  <strong>SplitWise Team</strong></p>
+  <strong>Splitly Team</strong></p>
 </div>
 `,
         );

@@ -57,6 +57,10 @@ export class UserAuthController {
           <h2>Email Verification</h2>
           <p>Click the link below to verify your email</p>
           <a href="${verifyUrl}">Verify Email</a>
+
+           <p>Best regards,<br/>
+  <strong>Splitly Team</strong></p>
+  </div>
           `,
         );
       }
@@ -129,7 +133,7 @@ export class UserAuthController {
   <br/>
 
   <p>Best regards,<br/>
-  <strong>SplitWise Team</strong></p>
+  <strong>Splitly Team</strong></p>
   </div>
   `,
       );
@@ -207,7 +211,7 @@ export class UserAuthController {
   <br/>
 
   <p>Best regards,<br/>
-  <strong>SplitWise Team</strong></p>
+  <strong>Splitly Team</strong></p>
 </div>
 `,
               );

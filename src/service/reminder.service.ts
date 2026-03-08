@@ -3,9 +3,14 @@ import { Group } from "../models/groupModel.js";
 import { ReminderModel } from "../models/reminderModel.js";
 import { UserModel } from "../models/userModel.js";
 import { services } from "../store/serviceContainer.js";
+import { JournelServices } from "./journel.service.js";
 
 export class ReminderService {
-  private journalService = services.journelService;
+  private journalService: JournelServices;
+
+  constructor() {
+    this.journalService = new JournelServices();
+  }
 
   sendReminder = async (
     groupId: string,

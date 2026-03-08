@@ -5,11 +5,20 @@ import { Group } from "../models/groupModel.js";
 import { IExpense } from "../types/expense.js";
 import { InternalServerError } from "../error/httpServerError.js";
 import { services } from "../store/serviceContainer.js";
+import { EntryService } from "./enetry.service.js";
+import { JournelServices } from "./journel.service.js";
+import { BalanceService } from "./balance.service.js";
 
 export class ExpenseService {
-  private entryService = services.entryService;
-  private journelService = services.journelService;
-  private balanceService = services.balanceService;
+  private entryService: EntryService;
+  private journelService: JournelServices;
+  private balanceService: BalanceService;
+
+  constructor() {
+    this.entryService = new EntryService();
+    this.journelService = new JournelServices();
+    this.balanceService = new BalanceService();
+  }
 
   async addExpense(
     expense: { title: string; amount: number; description?: string },
