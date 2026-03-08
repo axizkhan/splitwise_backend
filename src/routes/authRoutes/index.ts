@@ -4,6 +4,7 @@ import { ExpenseRouter } from "./expense.routes.js";
 import { UserRouter } from "./user.routes.js";
 import { JournelRouter } from "./journel.routes.js";
 import { PaymentRouter } from "./payment.routes.js";
+import { ReminderRouter } from "./reminder.routes.js";
 
 export class AuthRoutes {
   public authRouter: Router;
@@ -12,6 +13,7 @@ export class AuthRoutes {
   private userRouter: UserRouter;
   private journelRouter: JournelRouter;
   private paymentRouter: PaymentRouter;
+  private reminderRouter: ReminderRouter;
   constructor() {
     this.authRouter = Router();
     this.groupRouter = new GroupRouter();
@@ -19,6 +21,7 @@ export class AuthRoutes {
     this.userRouter = new UserRouter();
     this.journelRouter = new JournelRouter();
     this.paymentRouter = new PaymentRouter();
+    this.reminderRouter = new ReminderRouter();
     this.authPathInitializer();
   }
   authPathInitializer() {
@@ -27,5 +30,6 @@ export class AuthRoutes {
     this.authRouter.use("/user", this.userRouter.userRouter);
     this.authRouter.use("/journel", this.journelRouter.journelRouter);
     this.authRouter.use("/payment", this.paymentRouter.paymentRouter);
+    this.authRouter.use("/reminder", this.reminderRouter.reminderRouter);
   }
 }

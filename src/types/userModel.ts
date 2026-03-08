@@ -4,8 +4,8 @@ export type IAccountType = "google" | "local";
 
 export interface IAccount {
   type: IAccountType;
-  passwordHash?: string; // optional
-  providerId?: string; // optional
+  passwordHash?: string;
+  providerId?: string;
 }
 
 export interface IUser {
@@ -17,11 +17,11 @@ export interface IUser {
     lastName: string;
   };
 
-  mobileNumber?: number; // optional
-  upiId?: string; // optional
+  mobileNumber?: number;
+  upiId?: string;
 
-  account: IAccount; // required (because schema defines it directly)
+  account: IAccount;
   isEmailVerified: boolean;
-  updatedAt?: Date; // auto generated
-  deletedAt?: Date | null; // can be null
+  updatedAt?: Date;
+  deletedAt?: Date | null;
 }

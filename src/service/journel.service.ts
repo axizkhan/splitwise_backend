@@ -172,32 +172,39 @@ export class JournelServices {
             new mongoose.Types.ObjectId(user2Id),
           ],
         },
-      }).populate({
-        path: "entryArray",
-        populate: [
-          {
-            path: "lenderId",
-            select: "name.firstName name.lastName mobileNumber upiId _id email",
+      })
+        .populate({
+          path: "users",
+          select: "name.firstName name.lastName emailId mobileNumber upiId",
+        })
+        .populate({
+          path: "entryArray",
+          populate: [
+            {
+              path: "lenderId",
+              select:
+                "name.firstName name.lastName mobileNumber upiId _id email",
+            },
+            {
+              path: "borowerId",
+              select:
+                "name.firstName name.lastName mobileNumber upiId _id email",
+            },
+            {
+              path: "expenseId",
+              select: "title description amount",
+            },
+            {
+              path: "paymentId",
+              select: "amount",
+            },
+          ],
+          options: {
+            sort: { _id: -1 },
+            skip: 10 * (pageNumber - 1),
+            limit: 10,
           },
-          {
-            path: "borowerId",
-            select: "name.firstName name.lastName mobileNumber upiId _id email",
-          },
-          {
-            path: "expenseId",
-            select: "title description amount",
-          },
-          {
-            path: "paymentId",
-            select: "amount",
-          },
-        ],
-        options: {
-          sort: { _id: -1 },
-          skip: 10 * (pageNumber - 1),
-          limit: 10,
-        },
-      });
+        });
 
       const totalEntryCount = await Journel.aggregate([
         {
@@ -227,4 +234,41 @@ export class JournelServices {
       throw error;
     }
   }
+
+  calculateBalance = async (
+    groupId: string,
+    senderId: string,
+    memberId: string,
+  ): Promise<number> => {
+    const journal = await Journel.findOne({
+      groupId,
+      users: { $all: [senderId, memberId] },
+      deletedAt: null,
+    })
+      .populate("entryArray")
+      .lean();
+
+    if (!journal || !journal.entryArray?.length) return 0;
+
+    let balance = 0;
+
+    for (const entry of journal.entryArray as any[]) {
+      if (entry.deletedAt) continue;
+
+      const lender = entry.lenderId.toString();
+      const borrower = entry.borowerId.toString();
+
+      // member owes sender
+      if (lender === senderId && borrower === memberId) {
+        balance += entry.amount;
+      }
+
+      // sender owes member
+      else if (lender === memberId && borrower === senderId) {
+        balance -= entry.amount;
+      }
+    }
+
+    return balance;
+  };
 }

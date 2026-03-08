@@ -25,3 +25,5 @@ const ReminderSchema = new Schema({
     default: Date.now,
   },
 });
+
+export const ReminderModel = mongoose.model("Reminder", ReminderSchema);

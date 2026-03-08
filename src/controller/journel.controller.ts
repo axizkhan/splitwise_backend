@@ -78,7 +78,10 @@ export class JournelController {
 
       req.resData = {
         message: "Data send Successfully",
-        data: journels || "",
+        data: {
+          entries: journels.journelData,
+          totalEntryCount: journels.totalEntryCount,
+        },
         statusCode: 200,
       };
 
