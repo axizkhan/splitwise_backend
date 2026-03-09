@@ -1,4 +1,3 @@
-
 # Splitly Backend Documentation
 
 ---
@@ -50,18 +49,18 @@ Splitly backend follows a modular, layered architecture:
 
 ## 4. Tech Stack
 
-| Technology   | Purpose                                 |
-|-------------|------------------------------------------|
-| Node.js     | JavaScript runtime                       |
-| Express.js  | Web framework for REST APIs              |
-| MongoDB     | NoSQL database                           |
-| Mongoose    | ODM for MongoDB                          |
-| JWT         | Authentication tokens                    |
-| Passport.js | Authentication middleware                |
-| Nodemailer  | Email sending                            |
-| dotenv      | Environment variable management          |
-| bcrypt      | Password hashing                         |
-| TypeScript  | Type safety and maintainability          |
+| Technology  | Purpose                         |
+| ----------- | ------------------------------- |
+| Node.js     | JavaScript runtime              |
+| Express.js  | Web framework for REST APIs     |
+| MongoDB     | NoSQL database                  |
+| Mongoose    | ODM for MongoDB                 |
+| JWT         | Authentication tokens           |
+| Passport.js | Authentication middleware       |
+| Nodemailer  | Email sending                   |
+| dotenv      | Environment variable management |
+| bcrypt      | Password hashing                |
+| TypeScript  | Type safety and maintainability |
 
 ---
 
@@ -153,6 +152,7 @@ src/
 ```
 
 ### Directory Purpose
+
 - **controller/**: Handles incoming requests and response logic.
 - **service/**: Contains business logic and interacts with models.
 - **models/**: Defines MongoDB schemas and collections.
@@ -170,6 +170,7 @@ src/
 ## 6. Installation & Setup
 
 ### Prerequisites
+
 - Node.js (v16+ recommended)
 - MongoDB (local or cloud instance)
 - npm
@@ -204,6 +205,7 @@ SALT_ROUND=10
 ```
 
 **Variable Explanations:**
+
 - `PORT`: Port for server to run
 - `MONGODB_URL`: MongoDB connection string
 - `JWT_SIGN`: Secret for JWT token signing
@@ -224,168 +226,169 @@ npm run dev
 ### Authentication
 
 - **POST /api/user/signup-local**
-	- Registers a new user (local signup)
-	- Request body:
-		```json
-		{
-			"email": "user@example.com",
-			"password": "password123",
-			"firstName": "John",
-			"lastName": "Doe"
-		}
-		```
-	- Response:
-		```json
-		{
-			"message": "User signup successfully",
-			"data": "Check your email"
-		}
-		```
+  - Registers a new user (local signup)
+  - Request body:
+    ```json
+    {
+      "email": "user@example.com",
+      "password": "password123",
+      "firstName": "John",
+      "lastName": "Doe"
+    }
+    ```
+  - Response:
+    ```json
+    {
+      "message": "User signup successfully",
+      "data": "Check your email"
+    }
+    ```
 
 - **GET /api/user/verify-email?token=...**
-	- Verifies user email using token
-	- Response:
-		```json
-		{
-			"message": "User verified successfully",
-			"data": { "user": { ... }, "accessToken": "..." }
-		}
-		```
+  - Verifies user email using token
+  - Response:
+    ```json
+    {
+    	"message": "User verified successfully",
+    	"data": { "user": { ... }, "accessToken": "..." }
+    }
+    ```
 
 - **POST /api/user/login-local**
-	- Logs in user
-	- Request body:
-		```json
-		{
-			"email": "user@example.com",
-			"password": "password123"
-		}
-		```
-	- Response:
-		```json
-		{
-			"message": "User login successfully",
-			"data": { "user": { ... }, "accessToken": "..." }
-		}
-		```
+  - Logs in user
+  - Request body:
+    ```json
+    {
+      "email": "user@example.com",
+      "password": "password123"
+    }
+    ```
+  - Response:
+    ```json
+    {
+    	"message": "User login successfully",
+    	"data": { "user": { ... }, "accessToken": "..." }
+    }
+    ```
 
 ### Users
 
 - **GET /api/auth/user/**
-	- Returns all groups for authenticated user
-	- Response:
-		```json
-		{
-			"data": [ { "_id": "...", "name": "Group 1", ... } ],
-			"statusCode": 200,
-			"message": "Data found successfully"
-		}
-		```
+  - Returns all groups for authenticated user
+  - Response:
+    ```json
+    {
+    	"data": [ { "_id": "...", "name": "Group 1", ... } ],
+    	"statusCode": 200,
+    	"message": "Data found successfully"
+    }
+    ```
 
 ### Groups
 
 - **POST /api/auth/group/**
-	- Create a new group
-	- Request body:
-		```json
-		{
-			"name": "Trip to Goa",
-			"description": "Friends trip"
-		}
-		```
-	- Response:
-		```json
-		{
-			"data": { "_id": "...", "name": "Trip to Goa", ... },
-			"statusCode": 201,
-			"message": "GROUP_CREATED_SUCCESSFULLY"
-		}
-		```
+  - Create a new group
+  - Request body:
+    ```json
+    {
+      "name": "Trip to Goa",
+      "description": "Friends trip"
+    }
+    ```
+  - Response:
+    ```json
+    {
+    	"data": { "_id": "...", "name": "Trip to Goa", ... },
+    	"statusCode": 201,
+    	"message": "GROUP_CREATED_SUCCESSFULLY"
+    }
+    ```
 
 - **PUT /api/auth/group/:groupId**
-	- Add member to group by email
-	- Request body:
-		```json
-		{
-			"newMemberEmail": "friend@example.com"
-		}
-		```
-	- Response:
-		```json
-		{
-			"message": "Invitation sent to user email"
-		}
-		```
+  - Add member to group by email
+  - Request body:
+    ```json
+    {
+      "newMemberEmail": "friend@example.com"
+    }
+    ```
+  - Response:
+    ```json
+    {
+      "message": "Invitation sent to user email"
+    }
+    ```
 
 - **GET /api/auth/group/:groupId**
-	- Get group details and balances
+  - Get group details and balances
 
 - **DELETE /api/auth/group/:groupId**
-	- Delete group (creator only)
+  - Delete group (creator only)
 
 ### Invitations
 
 - **POST /api/auth/group/:groupId**
-	- Invites user to group (if not registered)
+  - Invites user to group (if not registered)
 
 ### Expenses
 
 - **POST /api/auth/expense/:groupId**
-	- Add expense to group
-	- Request body:
-		```json
-		{
-			"title": "Lunch",
-			"amount": 500,
-			"description": "Lunch at restaurant"
-		}
-		```
+  - Add expense to group
+  - Request body:
+    ```json
+    {
+      "title": "Lunch",
+      "amount": 500,
+      "description": "Lunch at restaurant"
+    }
+    ```
 
 - **GET /api/auth/expense/user/:groupId**
-	- Get all expenses added by user in group
+  - Get all expenses added by user in group
 
 - **GET /api/auth/expense/:groupId**
-	- Get all expenses in group
+  - Get all expenses in group
 
 - **PUT /api/auth/expense/:expenseId**
-	- Edit expense amount
+  - Edit expense amount
 
 - **DELETE /api/auth/expense/:expenseId**
-	- Delete expense
+  - Delete expense
 
 ### Payments
 
 - **POST /api/auth/payment/**
-	- Record payment between users
-	- Request body:
-		```json
-		{
-			"groupId": "...",
-			"paidToId": "...",
-			"amount": 200
-		}
-		```
+  - Record payment between users
+  - Request body:
+    ```json
+    {
+      "groupId": "...",
+      "paidToId": "...",
+      "amount": 200
+    }
+    ```
 
 ### Balance Calculations
 
 - **GET /api/auth/group/:groupId**
-	- Returns group summary, balances, and user data
+  - Returns group summary, balances, and user data
 
 ### Reminders
 
 - **POST /api/auth/reminder/:groupId/:memberId**
-	- Send payment reminder to group member
+  - Send payment reminder to group member
 
 ### Journals
 
 - **GET /api/auth/journel/:journelId/:pageNumber**
-	- Get journal entries for a group
+  - Get journal entries for a group
 
 ---
 
 ## 8. Database Models
 
 ### User
+
 ```js
 {
 	emailId: String,
@@ -400,6 +403,7 @@ npm run dev
 ```
 
 ### Group
+
 ```js
 {
 	createdBy: ObjectId,
@@ -413,6 +417,7 @@ npm run dev
 ```
 
 ### Expense
+
 ```js
 {
 	groupId: ObjectId,
@@ -425,6 +430,7 @@ npm run dev
 ```
 
 ### Payment
+
 ```js
 {
 	paidBy: ObjectId,
@@ -436,6 +442,7 @@ npm run dev
 ```
 
 ### UserInvite
+
 ```js
 {
 	emailId: String,
@@ -446,6 +453,7 @@ npm run dev
 ```
 
 ### Relationships
+
 - **User** can belong to multiple **Groups**
 - **Group** has multiple **Members** (Users)
 - **Expense** is linked to a **Group** and a **User** (paidBy)
@@ -464,12 +472,13 @@ Errors are handled using custom error classes and middleware. API responses incl
 - `data`: Response data or empty array
 
 Example error response:
+
 ```json
 {
-	"success": false,
-	"message": "Unauthorized",
-	"code": "UNAUTHORIZED",
-	"data": []
+  "success": false,
+  "message": "Unauthorized",
+  "code": "UNAUTHORIZED",
+  "data": []
 }
 ```
 
