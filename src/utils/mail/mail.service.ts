@@ -25,7 +25,7 @@ export class MailService {
         html,
       });
     } catch (err) {
-      console.log(err);
+      console.log(err, "*************MAIL___ERROR****************");
     }
   }
 }
