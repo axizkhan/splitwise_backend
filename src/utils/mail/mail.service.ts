@@ -1,30 +1,29 @@
-import nodemailer from "nodemailer";
+import { BrevoClient } from "@getbrevo/brevo";
 
 export class MailService {
-  private transpoter: nodemailer.Transporter;
+  private client: BrevoClient;
 
   constructor() {
-    this.transpoter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: false,
-      auth: {
-        user: process.env.SMTP_EMAIL,
-        pass: process.env.SMTP_PASSWORD,
-      },
+    this.client = new BrevoClient({
+      apiKey: process.env.BRAVO_API_KEY as string,
     });
   }
 
   async sendMail(to: string, subject: string, html: string) {
     try {
-      let result = await this.transpoter.sendMail({
-        from: process.env.SMTP_EMAIL,
-        to,
-        subject,
-        html,
+      await this.client.transactionalEmails.sendTransacEmail({
+        sender: {
+          email: "splitly@brevo.com",
+          name: "Splitly",
+        },
+        to: [{ email: to }],
+        subject: subject,
+        htmlContent: html,
       });
+
+      console.log("Email sent successfully");
     } catch (err) {
-      console.log(err, "**********************ERROR*********************");
+      console.error("Email error:", err);
     }
   }
 }

@@ -26,6 +26,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@getbrevo/brevo": "^4.0.1",
     "@types/cookie-parser": "^1.4.10",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
