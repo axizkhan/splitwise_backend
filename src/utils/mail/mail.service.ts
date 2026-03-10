@@ -5,7 +5,7 @@ export class MailService {
 
   constructor() {
     this.client = new BrevoClient({
-      apiKey: process.env.BRAVO_API_KEY as string,
+      apiKey: process.env.BREVO_API_KEY as string,
     });
   }
 
