@@ -1,3 +1,6 @@
+import dns from "dns";
+dns.setDefaultResultOrder("ipv4first");
+
 import nodemailer from "nodemailer";
 
 export class MailService {
@@ -13,6 +16,7 @@ export class MailService {
         user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASSWORD,
       },
+      tls: {},
     });
   }
 
@@ -25,7 +29,8 @@ export class MailService {
         html,
       });
     } catch (err) {
-      console.log(err, "*************MAIL___ERROR****************");
+      console.log(err, "**********************ERROR*********************");
+      throw err;
     }
   }
 }
