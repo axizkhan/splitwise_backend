@@ -13,7 +13,7 @@ export class MailService {
     try {
       await this.client.transactionalEmails.sendTransacEmail({
         sender: {
-          email: "splitly@brevo.com",
+          email: "splitlybya@gmail.com",
           name: "Splitly",
         },
         to: [{ email: to }],
