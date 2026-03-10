@@ -13,15 +13,13 @@ export class MailService {
     try {
       await this.client.transactionalEmails.sendTransacEmail({
         sender: {
-          email: "splitlybya@gmail.com",
-          name: "Splitly",
+          email: process.env.BREVO_EMAIL as string,
+          name: "SplitlyBya",
         },
         to: [{ email: to }],
         subject: subject,
         htmlContent: html,
       });
-
-      console.log("Email sent successfully");
     } catch (err) {
       console.error("Email error:", err);
     }

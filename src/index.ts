@@ -1,5 +1,3 @@
-import dns from "dns";
-dns.setDefaultResultOrder("ipv4first");
 import { BootStrap } from "./main.js";
 import dotenv from "dotenv";
 
