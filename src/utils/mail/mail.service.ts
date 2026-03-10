@@ -1,6 +1,3 @@
-import dns from "dns";
-dns.setDefaultResultOrder("ipv4first");
-
 import nodemailer from "nodemailer";
 
 export class MailService {
@@ -8,7 +5,6 @@ export class MailService {
 
   constructor() {
     this.transpoter = nodemailer.createTransport({
-      service: "gmail",
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
       secure: false,
@@ -16,7 +12,6 @@ export class MailService {
         user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASSWORD,
       },
-      tls: {},
     });
   }
 
@@ -30,7 +25,6 @@ export class MailService {
       });
     } catch (err) {
       console.log(err, "**********************ERROR*********************");
-      throw err;
     }
   }
 }
